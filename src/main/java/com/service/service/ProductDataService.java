@@ -2,13 +2,12 @@ package com.service.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.service.model.Category;
-import com.service.model.Merchant;
 import com.service.model.Product;
 import com.service.repository.CategoryRepository;
 import com.service.repository.MerchantRepository;
@@ -25,6 +24,9 @@ public class ProductDataService {
 	
 	@Autowired
 	MerchantRepository merchantRepository;
+	
+	Predicate<Optional<Product>> isCategory = p -> p.get().getCategory() != null;
+	Predicate<Optional<Product>> isMerchant = p -> p.get().getMerchant() != null;
 
 	public Product save(Product product) {
 		return productRepository.save(product);
@@ -66,13 +68,10 @@ public class ProductDataService {
 		if (!userOptional.isPresent())
 			return ResponseEntity.notFound().build();
 		
-		
-		Category category = userOptional.get().getCategory();
-		Merchant merchant = userOptional.get().getMerchant();
-		if(category != null)
-			categoryCount = productRepository.getCategoryCount(category.getCategoryId());
-		if(merchant != null)
-			merchantCount = productRepository.getMerchantCount(merchant.getMerchantId());
+		if(isCategory.test(userOptional))
+			categoryCount = productRepository.getCategoryCount(userOptional.get().getCategory().getCategoryId());
+		if(isMerchant.test(userOptional))
+			merchantCount = productRepository.getMerchantCount(userOptional.get().getMerchant().getMerchantId());
 		productRepository.deleteProduct(id);
 		if(categoryCount == 1) {
 			categoryRepository.deleteCategory(userOptional.get().getCategory().getCategoryId());
@@ -91,12 +90,10 @@ public class ProductDataService {
 		if (!userOptional.isPresent())
 			return ResponseEntity.notFound().build();
 		
-		Category category = userOptional.get().getCategory();
-		Merchant merchant = userOptional.get().getMerchant();
-		if(category != null)
-			categoryCount = productRepository.getCategoryCount(category.getCategoryId());
-		if(merchant != null)
-			merchantCount = productRepository.getMerchantCount(merchant.getMerchantId());
+		if(isCategory.test(userOptional))
+			categoryCount = productRepository.getCategoryCount(userOptional.get().getCategory().getCategoryId());
+		if(isMerchant.test(userOptional))
+			merchantCount = productRepository.getMerchantCount(userOptional.get().getMerchant().getMerchantId());
 		productRepository.deleteProduct(userOptional.get().getProductId());
 		if(categoryCount == 1) {
 			categoryRepository.deleteCategory(userOptional.get().getCategory().getCategoryId());
@@ -111,4 +108,5 @@ public class ProductDataService {
 	public List<Product> getAllProducts() {
 		return productRepository.findAll();
 	}
+	
 }
