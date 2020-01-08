@@ -77,4 +77,9 @@ public class ControllerRest {
 		return productDataService.deleteProduct(id);
 	}
 	
+	@DeleteMapping("/delete/{productName}")
+	public ResponseEntity<Object> deleteProduct(@PathVariable String productName) {
+		return productDataService.deleteByProductName(productName);
+	}
+	
 }
