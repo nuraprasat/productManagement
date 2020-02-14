@@ -2,8 +2,7 @@
 CREATE TABLE category (
     category_id INTEGER NOT NULL AUTO_INCREMENT,
     category_name VARCHAR(128) NOT NULL,
-    subcategory_name VARCHAR(128) NOT NULL,
-    gender VARCHAR(128) NOT NULL,
+    parent_category_id INTEGER NULL,
 
     PRIMARY KEY (category_id)
 );

@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,7 +23,8 @@ public class Category {
 	private int categoryId;
 	@Column(name = "category_name")
 	private String categoryName;
-	@Column(name = "subcategory_name")
-	private String subcategoryName;
-	private String gender;
+	@ManyToOne
+	@JoinColumn(name = "parent_category_id")
+	private Category parentCategory;
+
 }
